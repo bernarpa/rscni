@@ -77,7 +77,7 @@ func (scra *RsCniScraper) Scrape(cfg *goutils.Cfg, logger *log.Logger) error {
 	}
 
 	baseDir := path.Join(datadir, "issues")
-	os.MkdirAll(baseDir, os.ModeDir)
+	os.MkdirAll(baseDir, 0755)
 
 	for _, giorno := range giorni {
 		if giorno.urlPdf == "" {
@@ -92,7 +92,7 @@ func (scra *RsCniScraper) Scrape(cfg *goutils.Cfg, logger *log.Logger) error {
 		}
 
 		logger.Printf("Downloading %s...\n", giorno.title)
-		os.MkdirAll(dir, os.ModeDir)
+		os.MkdirAll(dir, 0755)
 		goutils.DownloadHttpFile(giorno.urlPdf, pdf)
 	}
 
