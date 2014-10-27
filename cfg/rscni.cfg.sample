@@ -1,0 +1,10 @@
+# Rassegna Stampa CNI configuration file
+
+datadir = c:\Users\Pippo\Rassegna Stampa CNI
+
+smtp.host = smtp.gmail.com
+smtp.port = 587
+smtp.username = pippo@gmail.com
+smtp.password = topolinia
+smtp.fromname = Pippo
+smtp.fromemail = pippo@gmail.com
