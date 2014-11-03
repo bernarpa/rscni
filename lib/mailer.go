@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/mail"
+    "os/exec"
 	"path"
 	"strings"
 
@@ -84,6 +85,11 @@ func (mailer *RsCniMailer) Mail(cfg *goutils.Cfg, logger *log.Logger) error {
 
 	recipients := make([]*mail.Address, 0, 10)
 	for _, line := range strings.Split(string(bytes), "\n") {
+        if len(strings.TrimSpace(line)) == 0 {
+            continue
+        }
+
+        log.Printf("LINE: %s\n", line)
 		r, err := mail.ParseAddress(line)
 		if err != nil {
 			return err
@@ -115,9 +121,10 @@ func (mailer *RsCniMailer) Mail(cfg *goutils.Cfg, logger *log.Logger) error {
 				continue
 			}
 
+            issuePath := path.Join(subdir, issue.Name())
 			attachment := goutils.Attachment{
 				ContentType: "application/pdf",
-				Path:        path.Join(subdir, issue.Name()),
+				Path:        issuePath,
 			}
 			for _, r := range recipients {
 				logger.Printf("Sending %s to %v\n", issue.Name(), r)
@@ -126,7 +133,7 @@ func (mailer *RsCniMailer) Mail(cfg *goutils.Cfg, logger *log.Logger) error {
 					smtpAccount,
 					from,
 					[]mail.Address{*r},
-					mailer.Name(),      // Subject
+					strings.Split(issue.Name(), ".")[0], // Subject
 					"Vedi l'allegato.", // Body
 					[]goutils.Attachment{attachment},
 				)
@@ -134,6 +141,16 @@ func (mailer *RsCniMailer) Mail(cfg *goutils.Cfg, logger *log.Logger) error {
 					return err
 				}
 			}
+
+            if onedrivePut, ok := cfg.Get("onedriveput"); ok {
+                dest := "Documenti\\\\Ordine degli Ingegneri\\\\Rassegna Stampa CNI\\\\" + sd.Name()
+                if out, err := exec.Command("python2", onedrivePut, issuePath, dest).Output(); err != nil {
+                    logger.Println(string(out))
+                    return err
+                } else {
+                    logger.Println(string(out))
+                }
+            }
 
 			current := sd.Name() + "/" + issue.Name()
 			if current > last {
