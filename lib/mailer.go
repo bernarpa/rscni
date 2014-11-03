@@ -85,11 +85,10 @@ func (mailer *RsCniMailer) Mail(cfg *goutils.Cfg, logger *log.Logger) error {
 
 	recipients := make([]*mail.Address, 0, 10)
 	for _, line := range strings.Split(string(bytes), "\n") {
-        if len(strings.TrimSpace(line)) == 0 {
-            continue
-        }
+		if len(strings.TrimSpace(line)) == 0 {
+			continue
+		}
 
-        log.Printf("LINE: %s\n", line)
 		r, err := mail.ParseAddress(line)
 		if err != nil {
 			return err
