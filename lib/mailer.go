@@ -151,6 +151,16 @@ func (mailer *RsCniMailer) Mail(cfg *goutils.Cfg, logger *log.Logger) error {
                 }
             }
 
+            if dropboxUploader, ok := cfg.Get("dropbox_uploader"); ok {
+                dest := "Documenti/Ordine degli Ingegneri/Rassegna Stampa CNI/" + sd.Name()
+                if out, err := exec.Command(dropboxUploader, "upload", issuePath, dest).Output(); err != nil {
+                    logger.Println(string(out))
+                    return err
+                } else {
+                    logger.Println(string(out))
+                }
+            }
+
 			current := sd.Name() + "/" + issue.Name()
 			if current > last {
 				last = current

@@ -8,3 +8,5 @@ smtp.username = pippo@gmail.com
 smtp.password = topolinia
 smtp.fromname = Pippo
 smtp.fromemail = pippo@gmail.com
+
+dropbox_uploader = /home/pippo/dropbox_uploader.sh
